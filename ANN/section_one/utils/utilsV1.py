@@ -5,7 +5,6 @@ from project_assets.Loading_Datasets import Loader
 def sigmoid(Z):
     A = 1 / (1 + np.exp(-Z))
     cache = Z
-
     return A, cache
 
 

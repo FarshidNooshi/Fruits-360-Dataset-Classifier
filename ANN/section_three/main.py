@@ -4,7 +4,7 @@ import numpy as np
 
 from ANN.section_one.credentials import get_path_of_Datasets
 from ANN.section_one.utils.utilsV1 import load_data
-from ANN.section_two.utils.utilsV2 import L_layer_model
+from ANN.section_three.utils.utilsV3 import L_layer_model
 
 path = get_path_of_Datasets()
 train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig = load_data(path)
@@ -22,5 +22,5 @@ x_section_three = x_train[:, 0:200]
 y_section_three = y_train[:, 0:200]
 
 start_time = time.time()
-parameters = L_layer_model(x_section_three, y_section_three, [102, 150, 60, 4], print_cost=True)
+parameters = L_layer_model(x_section_three, y_section_three, [102, 150, 60, 4], num_epochs=5, print_cost=True)
 print("\n--- %s seconds ---" % (time.time() - start_time))
