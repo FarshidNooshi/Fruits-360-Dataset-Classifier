@@ -17,13 +17,10 @@ def load_data(path):
     test_set_x_orig = np.array(test_set[:, 0])
     test_set_y_orig = np.array(test_set[:, 1])
 
-    # classes = np.array(test_dataset["list_classes"][:])  # the list of classes
-
-    return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig  # , classes
+    return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig
 
 
 def initialize_parameters_deep(layer_dims):
-    np.random.seed(1)
     parameters = {}
     L = len(layer_dims)  # number of layers in the network
 
@@ -88,7 +85,6 @@ def L_model_forward(X, parameters):
 def predict(X, y, parameters):
 
     m = np.shape(X[0])[0]
-    n = len(parameters) // 2  # number of layers in the neural network
     p = np.zeros((4, m))
 
     # Forward propagation
