@@ -26,7 +26,7 @@ def initialize_parameters_deep(layer_dims):
     L = len(layer_dims)  # number of layers in the network
 
     for l in range(1, L):
-        parameters['W' + str(l)] = np.random.normal(size=(layer_dims[l], layer_dims[l-1]))
+        parameters['W' + str(l)] = np.random.normal(size=(layer_dims[l], layer_dims[l - 1]))
         parameters['b' + str(l)] = np.zeros((layer_dims[l], 1))
 
     return parameters
@@ -78,8 +78,7 @@ def L_model_forward(X, parameters):
     return AL, caches
 
 
-def predict(X, y, parameters):
-
+def predict(X, y, parameters, file=None):
     m = np.shape(X[0])[0]
     p = np.zeros((4, m))
 
@@ -93,6 +92,8 @@ def predict(X, y, parameters):
     ss = 0
     for i in range(m):
         ss += np.sum(p[:, i] == y[:, i]) == 4
-    print("Accuracy: " + str(100.0 * (ss / m)))
-
-    return p
+    if file is None:
+        print("Accuracy: " + str(100.0 * (ss / m)))
+    else:
+        file.write("Accuracy: " + str(100.0 * (ss / m)))
+    return ss

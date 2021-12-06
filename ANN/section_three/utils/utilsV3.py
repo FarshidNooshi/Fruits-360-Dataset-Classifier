@@ -90,8 +90,7 @@ def L_model_backward(grads, AL, Y, caches):  # caches = [((A_prev, W, b), Z)]
     return grads
 
 
-
-def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=10, print_cost=False):
+def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=10, print_cost=False, file=None):
     costs = []
 
     parameters = initialize_parameters_deep(layers_dims)
@@ -115,11 +114,16 @@ def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=1
                 grads = L_model_backward(grads, AL, y, caches)
                 correct_answers = update_number_of_correct_predictions(AL, correct_answers, y)
                 begin += 1
-            parameters = update_parameters(parameters, grads, learning_rate=learning_rate, batch_size=number_of_predictions)
+            parameters = update_parameters(parameters, grads, learning_rate=learning_rate,
+                                           batch_size=number_of_predictions)
         cost /= X.shape[1]
         if print_cost:
-            print(f"Cost after epoch {i}: {cost} and accuracy: {str(100.0 * (correct_answers / X.shape[1]))}")
-            costs.append(cost)
+            text_string = f"Cost after epoch {i}: {cost} and accuracy: {(100.0 * (correct_answers / X.shape[1]))}\n"
+            if file is None:
+                print(text_string)
+            else:
+                file.write(text_string)
+        costs.append(cost)
 
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
@@ -127,4 +131,4 @@ def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=1
     plt.title("Learning rate = " + str(learning_rate))
     plt.show()
 
-    return sum(costs)
+    return sum(costs), parameters
