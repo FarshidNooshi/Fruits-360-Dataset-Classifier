@@ -22,5 +22,5 @@ x_section_three = x_train[:, 0:200]
 y_section_three = y_train[:, 0:200]
 
 start_time = time.time()
-parameters = L_layer_model(x_section_three, y_section_three, [102, 150, 60, 4], print_cost=True)
+parameters = L_layer_model(x_section_three, y_section_three, [102, 150, 60, 4], num_epochs=5, print_cost=True)
 print("\n--- %s seconds ---" % (time.time() - start_time))

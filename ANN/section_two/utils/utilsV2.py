@@ -20,9 +20,19 @@ def compute_cost(AL, Y):
 def linear_backward(dZ, cache):
     A_prev, W, b = cache
 
-    dW = dot(dZ, A_prev.T)
+    dW = np.zeros((np.shape(dZ)[0], np.shape(A_prev)[0]))
+    for i in range(np.shape(dZ)[0]):
+        for j in range(np.shape(dZ)[1]):
+            for k in range(np.shape(A_prev)[0]):
+                dW[i][k] += dZ[i][j] * A_prev[k][j]
+
     db = dZ
-    dA_prev = dot(W.T, dZ)
+
+    dA_prev = np.zeros((np.shape(W)[1], np.shape(dZ)[1]))
+    for i in range(np.shape(W)[1]):
+        for j in range(np.shape(W)[0]):
+            for k in range(np.shape(dZ)[1]):
+                dA_prev[i][k] += W[j][i] * dZ[j][k]
 
     return dA_prev, dW, db
 
