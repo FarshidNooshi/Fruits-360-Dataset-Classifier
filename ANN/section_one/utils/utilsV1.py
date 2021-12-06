@@ -3,7 +3,7 @@ from project_assets.Loading_Datasets import Loader
 
 
 def sigmoid(Z):
-    A = 1 / (1 + np.exp(-Z))
+    A = 1.0 / (1 + np.exp(-Z))
     cache = Z
     return A, cache
 
@@ -27,23 +27,18 @@ def initialize_parameters_deep(layer_dims):
         parameters['W' + str(l)] = np.random.normal(size=(layer_dims[l], layer_dims[l-1]))
         parameters['b' + str(l)] = np.zeros((layer_dims[l], 1))
 
-        assert (parameters['W' + str(l)].shape == (layer_dims[l], layer_dims[l - 1]))
-        assert (parameters['b' + str(l)].shape == (layer_dims[l], 1))
-
     return parameters
 
 
 def linear_forward(A, W, b):
     Z = dot(W, A) + b
 
-    assert (Z.shape == (np.shape(W)[0], np.shape(A)[1]))
     cache = (A, W, b)
 
     return Z, cache
 
 
 def dot(W, A):
-    assert (np.shape(W)[1] == np.shape(A)[0])
     result = np.zeros((np.shape(W)[0], np.shape(A)[1]))
     for i in range(np.shape(W)[0]):
         for j in range(np.shape(W)[1]):
@@ -58,7 +53,6 @@ def linear_activation_forward(A_prev, W, b):
     Z, linear_cache = linear_forward(A_prev, W, b)
     A, activation_cache = sigmoid(Z)
 
-    assert (A.shape == (W.shape[0], A_prev.shape[1]))
     cache = (linear_cache, activation_cache)
 
     return A, cache

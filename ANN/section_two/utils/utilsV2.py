@@ -7,7 +7,6 @@ from ANN.section_one.utils.utilsV1 import initialize_parameters_deep, dot, L_mod
 def sigmoid_backward(dA, Z):
     s = 1 / (1 + np.exp(-Z))
     dZ = dA * s * (1 - s)
-    assert (dZ.shape == Z.shape)
     return dZ
 
 
@@ -21,7 +20,6 @@ def generate_output_layer(AL, layers_dims):
 def compute_cost(AL, Y):
     cost = np.sum(np.power(np.subtract(AL, Y), 2))
     cost = np.squeeze(cost)
-    assert (cost.shape == ())
     return cost
 
 
@@ -31,10 +29,6 @@ def linear_backward(dZ, cache):
     dW = dot(dZ, A_prev.T)
     db = dZ
     dA_prev = dot(W.T, dZ)
-
-    assert (dA_prev.shape == A_prev.shape)
-    assert (dW.shape == W.shape)
-    assert (db.shape == b.shape)
 
     return dA_prev, dW, db
 

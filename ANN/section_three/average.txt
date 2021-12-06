@@ -1,0 +1,3 @@
+cost average was 1.1195
+accuracy average was 53%
+
