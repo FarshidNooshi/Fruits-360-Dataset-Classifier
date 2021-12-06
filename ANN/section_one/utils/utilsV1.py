@@ -3,6 +3,8 @@ from project_assets.Loading_Datasets import Loader
 
 
 def sigmoid(Z):
+    """ Returns sigmoid(Z), Z
+    """
     A = 1.0 / (1 + np.exp(-Z))
     cache = Z
     return A, cache
@@ -31,6 +33,7 @@ def initialize_parameters_deep(layer_dims):
 
 
 def linear_forward(A, W, b):
+    """Returns Z, (A, W, b)"""
     Z = dot(W, A) + b
 
     cache = (A, W, b)
@@ -48,7 +51,7 @@ def dot(W, A):
 
 
 def linear_activation_forward(A_prev, W, b):
-
+    """Returns A, ((A_prev, W, b), Z)"""
     # Inputs: "A_prev, W, b". Outputs: "A, activation_cache".
     Z, linear_cache = linear_forward(A_prev, W, b)
     A, activation_cache = sigmoid(Z)
@@ -59,7 +62,7 @@ def linear_activation_forward(A_prev, W, b):
 
 
 def L_model_forward(X, parameters):
-
+    """returns AL, caches=[((A_prev, W, b), Z)]"""
     caches = []
     A = X
     L = len(parameters) // 2  # number of layers in the neural network

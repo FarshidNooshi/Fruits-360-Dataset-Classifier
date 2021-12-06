@@ -1,21 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-from ANN.section_one.utils.utilsV1 import initialize_parameters_deep
-
-
-def sigmoid(Z):
-    """ Returns sigmoid(Z), Z
-    """
-    A = 1.0 / (1 + np.exp(-Z))
-    cache = Z
-    return A, cache
-
-
-def sigmoid_backward(dA, Z):
-    s = 1 / (1 + np.exp(-Z))
-    dZ = dA * s * (1 - s)
-    return dZ
+from ANN.section_one.utils.utilsV1 import initialize_parameters_deep, sigmoid
+from ANN.section_two.utils.utilsV2 import sigmoid_backward, update_parameters, init_grads, \
+    update_number_of_correct_predictions
 
 
 def L_model_forward(X, parameters):
@@ -53,13 +41,6 @@ def linear_forward(A, W, b):
     cache = (A, W, b)
 
     return Z, cache
-
-
-def generate_output_layer(AL, layers_dims):
-    p = np.zeros((layers_dims[len(layers_dims) - 1], 1))
-    p[np.argmax(AL)] = 1
-    AL = p
-    return AL
 
 
 def compute_cost(AL, Y):
@@ -109,26 +90,6 @@ def L_model_backward(grads, AL, Y, caches):  # caches = [((A_prev, W, b), Z)]
     return grads
 
 
-def update_parameters(parameters, grads, learning_rate, batch_size):
-    L = len(parameters) // 2  # number of layers in the neural network
-
-    for l in range(1, L + 1):
-        parameters["W" + str(l)] = parameters["W" + str(l)] - (learning_rate * (grads["dW" + str(l)] / batch_size))
-        parameters["b" + str(l)] = parameters["b" + str(l)] - (learning_rate * (grads["db" + str(l)] / batch_size))
-    return parameters
-
-
-def init_grads(parameters, layer_dims):
-    L = len(parameters) // 2  # number of layers in the neural network
-    grads = {}
-
-    for l in range(0, L):
-        grads['dW' + str(l + 1)] = np.zeros((layer_dims[l + 1], layer_dims[l]))
-        grads['dA' + str(l)] = np.zeros((layer_dims[l], 1))
-        grads['db' + str(l + 1)] = np.zeros((layer_dims[l + 1], 1))
-
-    return grads
-
 
 def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=10, print_cost=False):
     costs = []
@@ -167,11 +128,3 @@ def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=1
     plt.show()
 
     return sum(costs)
-
-
-def update_number_of_correct_predictions(AL, correct_answers, y):
-    predicted_number = np.where(AL == np.amax(AL))
-    real_number = np.where(y == np.amax(y))
-    if predicted_number == real_number:
-        correct_answers += 1
-    return correct_answers

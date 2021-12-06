@@ -25,7 +25,7 @@ def run_program():
 
 
 sum_of_costs = 0
-for i in range(1):
+for i in range(10):
     print(f"\nrunning program with i = {i}\n")
     sum_of_costs += run_program()
 
