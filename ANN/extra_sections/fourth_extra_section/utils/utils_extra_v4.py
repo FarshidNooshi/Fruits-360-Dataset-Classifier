@@ -1,40 +1,58 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-from ANN.section_one.utils.utilsV1 import initialize_parameters_deep, dot, L_model_forward
+from ANN.section_one.utils.utilsV1 import initialize_parameters_deep, sigmoid
+from ANN.section_two.utils.utilsV2 import sigmoid_backward, update_parameters, init_grads, \
+    update_number_of_correct_predictions
 
 
-def sigmoid_backward(dA, Z):
-    s = 1 / (1 + np.exp(-Z))
-    dZ = dA * s * (1 - s)
-    return dZ
+def L_model_forward(X, parameters):
+    """returns AL, caches=[((A_prev, W, b), Z)]"""
+    caches = []
+    A = X
+    L = len(parameters) // 2  # number of layers in the neural network
+
+    for l in range(1, L):
+        A_prev = A
+        A, cache = linear_activation_forward(A_prev, parameters['W' + str(l)], parameters['b' + str(l)])
+        caches.append(cache)
+
+    AL, cache = linear_activation_forward(A, parameters['W' + str(L)], parameters['b' + str(L)])
+    caches.append(cache)
+
+    return AL, caches
+
+
+def linear_activation_forward(A_prev, W, b):
+    """Returns A, ((A_prev, W, b), Z)"""
+    # Inputs: "A_prev, W, b". Outputs: "A, activation_cache".
+    Z, linear_cache = linear_forward(A_prev, W, b)
+    A, activation_cache = sigmoid(Z)
+
+    cache = (linear_cache, activation_cache)
+
+    return A, cache
+
+
+def linear_forward(A, W, b):
+    """Returns Z, (A, W, b)"""
+    Z = (W @ A) + b
+
+    cache = (A, W, b)
+
+    return Z, cache
 
 
 def compute_cost(AL, Y):
-    temp = AL - Y
-    cost = np.sum((temp * temp))
+    temp = softmax(AL)
+    cost = -np.log(temp[np.argmax(Y)])
     cost = np.squeeze(cost)
     return cost
 
 
-def linear_backward(dZ, cache):
-    A_prev, W, b = cache
-
-    dW = np.zeros((np.shape(dZ)[0], np.shape(A_prev)[0]))
-    for i in range(np.shape(dZ)[0]):
-        for j in range(np.shape(dZ)[1]):
-            for k in range(np.shape(A_prev)[0]):
-                dW[i][k] += dZ[i][j] * A_prev[k][j]
-
-    db = dZ
-
-    dA_prev = np.zeros((np.shape(W)[1], np.shape(dZ)[1]))
-    for i in range(np.shape(W)[1]):
-        for j in range(np.shape(W)[0]):
-            for k in range(np.shape(dZ)[1]):
-                dA_prev[i][k] += W[j][i] * dZ[j][k]
-
-    return dA_prev, dW, db
+def softmax(X):
+    exps = np.exp(X - np.max(X))
+    return exps / np.sum(exps)
 
 
 def linear_activation_backward(dA, cache):
@@ -44,11 +62,22 @@ def linear_activation_backward(dA, cache):
     return dA_prev, dW, db
 
 
+def linear_backward(dZ, cache):
+    A_prev, W, b = cache
+
+    dW = dZ @ np.transpose(A_prev)
+    db = dZ
+    dA_prev = np.transpose(W) @ dZ
+
+    return dA_prev, dW, db
+
+
 def L_model_backward(grads, AL, Y, caches):  # caches = [((A_prev, W, b), Z)]
     t_grads = {}
     L = len(caches)  # the number of layers
     Y = Y.reshape(AL.shape)  # after this line, Y is the same shape as AL
-    dAL = 2.0 * (AL - Y)
+    exps = np.exp(AL - np.max(AL))
+    dAL = softmax(AL) - Y
     current_cache = caches[L - 1]  # Last Layer
     t_grads["dA" + str(L - 1)], t_grads["dW" + str(L)], t_grads["db" + str(L)] = linear_activation_backward(dAL,
                                                                                                             current_cache)
@@ -67,28 +96,7 @@ def L_model_backward(grads, AL, Y, caches):  # caches = [((A_prev, W, b), Z)]
     return grads
 
 
-def update_parameters(parameters, grads, learning_rate, batch_size):
-    L = len(parameters) // 2  # number of layers in the neural network
-
-    for l in range(1, L + 1):
-        parameters["W" + str(l)] = parameters["W" + str(l)] - (learning_rate * (grads["dW" + str(l)] / batch_size))
-        parameters["b" + str(l)] = parameters["b" + str(l)] - (learning_rate * (grads["db" + str(l)] / batch_size))
-    return parameters
-
-
-def init_grads(parameters, layer_dims):
-    L = len(parameters) // 2  # number of layers in the neural network
-    grads = {}
-
-    for l in range(0, L):
-        grads['dW' + str(l + 1)] = np.zeros((layer_dims[l + 1], layer_dims[l]))
-        grads['dA' + str(l)] = np.zeros((layer_dims[l], 1))
-        grads['db' + str(l + 1)] = np.zeros((layer_dims[l + 1], 1))
-
-    return grads
-
-
-def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=10, print_cost=False):
+def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=10, print_cost=False, file=None):
     costs = []
 
     parameters = initialize_parameters_deep(layers_dims)
@@ -116,21 +124,17 @@ def L_layer_model(X, Y, layers_dims, learning_rate=1, num_epochs=5, batch_size=1
                                            batch_size=number_of_predictions)
         cost /= X.shape[1]
         if print_cost:
-            print(f"Cost after epoch {i}: {cost} and accuracy: {str(100.0 * (correct_answers / X.shape[1]))}")
-            costs.append(cost)
+            text_string = f"Cost after epoch {i}: {cost} and accuracy: {(100.0 * (correct_answers / X.shape[1]))}\n"
+            if file is None:
+                print(text_string)
+            else:
+                file.write(text_string)
+        costs.append(cost)
 
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
     plt.xlabel('epochs')
-    plt.title("Learning rate =" + str(learning_rate))
+    plt.title("Learning rate = " + str(learning_rate))
     plt.show()
 
-    return parameters
-
-
-def update_number_of_correct_predictions(AL, correct_answers, y):
-    predicted_number = np.argmax(AL)
-    real_number = np.argmax(y)
-    if predicted_number == real_number:
-        correct_answers += 1
-    return correct_answers
+    return sum(costs), parameters
