@@ -13,4 +13,4 @@ This ANN was implemented to classify 4 classes of fruits. Feedforward algorithm 
 - Using softmax as output layer's activation function  
 ## Dataset
 [Kaggle 360-Fruits dataset](https://www.kaggle.com/moltean/fruits) was used.  
-A [feature extraction and size reduction technique](https://github.com/hedzd/Fruit-360-classification/blob/main/Feature_Extraction_Train.py) was used on train and test dataset to simplify the problem.
+A [feature extraction and size reduction technique](https://github.com/FarshidNooshi/Fruit-Detector/blob/master/Implementation/project_assets/Feature_Extraction_Train.py) was used on train and test dataset to simplify the problem.
