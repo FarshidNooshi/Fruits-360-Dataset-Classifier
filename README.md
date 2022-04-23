@@ -1,10 +1,10 @@
 # Fruit-360-classification
-In this project, a fully connected artificial neural network is implemented from scratch.
+In this project, a fully connected Artificial Neural Network(ANN) is implemented from scratch.
 
 ## Neural network architecture and details
-This ANN was implemented to classify 4 classes of fruits. Feedforward algorithm was implemented in vectorized form using softmax as activation function for each layer.  Back propagation was implemented in both *iterative* and *vectorized* forms with *sum of squared errors (SSE)* as cost function. *Stochastic Gradient Descent* algorithm was used to train the network.  
+This ANN was implemented to classify 4 classes of fruits. Feedforward algorithm was implemented in vectorized form using softmax as activation function for each layer.  Back propagation was implemented in both *iterative* and *vectorized* forms with *sum of squared errors (SSE)* as cost function. *Stochastic Gradient Descent* algorithm was used to train the network.
 
-![ANN]()  
+![ANN](https://github.com/FarshidNooshi/Fruit-Detector/blob/master/assets/network.JPG)  
 
 ### Additional parts included:
 - Hyperparameter tuning
