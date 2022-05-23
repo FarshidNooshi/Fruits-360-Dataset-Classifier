@@ -1,6 +1,7 @@
 <div align="center">
   <h1>In The Name Of GOD</h1>
   </div>
+  
 # Fruit-360-classification
 In this project, a fully connected Artificial Neural Network(ANN) is implemented from scratch.
 
